@@ -24,13 +24,6 @@ class Persistent_Filters_Config
 	 */
 	private $pluginName;
 
-	/**
-	 * All configurable items at global level and the info used to setup the form
-	 * @access	private
-	 * @var		array	$settings	Configurable items
-	 */
-	private $settings;
-
 
 	/**
 	 * Constuctor

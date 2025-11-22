@@ -62,7 +62,7 @@ class Persistent_Filters
 		// Reset filters
 		if (isset($_GET['reset_filters'])) {
 			delete_user_meta($user_id, $meta_key);
-			wp_redirect(admin_url('edit.php?post_type=' . $post_type));
+			wp_safe_redirect(admin_url('edit.php?post_type=' . $post_type));
 			exit;
 		}
 
@@ -80,7 +80,7 @@ class Persistent_Filters
 			|| (!isset($_GET['post_type']) && false !== strpos($_SERVER['REQUEST_URI'], 'edit.php'))) {
 			$saved = get_user_meta($user_id, $meta_key, true);
 			if ($saved) {
-				wp_redirect(admin_url('edit.php?' . $saved));
+				wp_safe_redirect(admin_url('edit.php?' . $saved));
 				exit;
 			}
 		}
@@ -148,7 +148,7 @@ class Persistent_Filters
 			echo '<a href="'
 				. esc_url($reset_url)
 				. '" class="button" style="float:right; margin-right:5px;">'
-				. __('Reset filters', 'Default')
+				. esc_html(__('Reset filters', 'persistent-filters'))
 				. '</a>';
 		}
 	}

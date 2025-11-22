@@ -7,7 +7,8 @@
  * Description: This plugin enables flexible filter persistence per post type, including a reset button and safeguards. Works for WordPress posts and pages, Woocommerce products and for standard filters with all other post types.
  * Author: Oveas Functionality Provider
  * Version: 1.0.0
- * Tested up to: 6.8.3
+ * Tested up to: 6.8
+ * License: GPLv2 or later
  * Author URI: http://oveas.com/
  */
 
@@ -41,6 +42,8 @@ function Persistent_Filters_Execute()
 {
 	require_once plugin_dir_path( __FILE__ ) . 'includes/persistent_filters_config.php';
 	require_once plugin_dir_path( __FILE__ ) . 'includes/persistent_filters.php';
+	$locale = apply_filters('persistent_filters_locale', get_locale(), '');
+	load_textdomain('persistent-filters', plugin_dir_path( __FILE__ )  . 'language/' . $locale . '.mo' );
 	$plugin = new Persistent_Filters();
 }
 
