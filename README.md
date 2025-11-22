@@ -8,7 +8,7 @@ Filters are stored per user per post type (currently `post`, `page` and `product
 
 ## Features
 - Persist filters for Posts, Pages and WooCommerce Products in the admin lists.
-- Remember multiple filter types: post status, author, date, taxonomy (categories, tags, product attributes), search terms, and custom query vars.
+- Remember multiple filter types like date, categories, search terms and ordering.
 - Per-listing persistence (each post type keeps its own set of filters).
 - Lightweight: minimal performance overhead and no external dependencies.
 - For unknown post types, search string and ordering are stored..
@@ -46,7 +46,7 @@ A: Correct, that button is only shown when you actually used a filter for the cu
 Contributions, bug reports and feature requests are welcome. Please open an issue or submit a pull request on the plugin repository.
 
 ## License
-GNU public Licence GPL v2 — see license.txt for details.
+GNU General Public License GPLv2 — see license.txt for details.
 
 ## Changelog (short)
 - 1.0.0 — Initial release: Posts, Pages and WooCommerce product filter persistence.
