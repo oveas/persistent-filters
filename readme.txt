@@ -4,7 +4,7 @@ Donate link:
 Tags: filters, admin, posts, woocommerce, persistence
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,6 +46,9 @@ No, only the filters for the post type currently listed will be reset.
 Correct, that button is only shown when you actually used a filter for the current post type.
 
 == Changelog ==
+
+= 1.0.1 =
+* Fixed an incomplete commit to svn
 
 = 1.0.0 =
 * Initial release: Posts, Pages, and WooCommerce product filter persistence.
