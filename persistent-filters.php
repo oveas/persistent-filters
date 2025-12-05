@@ -7,7 +7,7 @@
  * Description: This plugin enables flexible filter persistence per post type, including a reset button and safeguards. Works for WordPress posts and pages, Woocommerce products and for standard filters with all other post types.
  * Author: Oveas Functionality Provider
  * Version: 1.0.1
- * Tested up to: 6.8
+ * Tested up to: 6.9
  * License: GPLv2 or later
  * Author URI: http://oveas.com/
  */
