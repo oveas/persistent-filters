@@ -72,13 +72,14 @@ class Persistent_Filters_Config
 		return [
 			  'keys-ignored' => ['edit','trash','delete','untrash','bulk-edit'] // Bulk actions - never make them persistent
     			, 'keys-allowed' => [
-					  'post'    => ['post_type','cat','orderby','order','s']
-					, 'page'    => ['post_type','orderby','order','s','m', 'cat']
-					, 'product' => ['post_type','product_cat','stock_status','product_type','product_brand','orderby','order','s']
+					  'post'       => ['post_type','cat','orderby','order','s']
+					, 'page'       => ['post_type','orderby','order','s','m', 'cat']
+					, 'product'    => ['post_type','product_cat','stock_status','product_type','product_brand','orderby','order','s']
+					, 'shop_order' => ['post_type','m','_created_via','_customer_user','orderby','order','s']
 				] // Filters per post type that should be persistent
-				, 'keys-fallback' => ['post_type','orderby','order','s'] // Default filters for unknown post types (fallback)
-				, 'export-params' => ['export','download','order_status','start_date','end_date'] // Don't set filters when used for export
-				, 'ignore-export' => 'yes'
+				, 'keys-fallback'    => ['post_type','orderby','order','s'] // Default filters for unknown post types (fallback)
+				, 'export-params'    => ['export','download','order_status','start_date','end_date'] // Don't set filters when used for export
+				, 'ignore-export'    => 'yes'
 				, 'fallback-enabled' => 'no'
 		    ];
 	}

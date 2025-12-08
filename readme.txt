@@ -4,7 +4,7 @@ Donate link:
 Tags: filters, admin, posts, woocommerce, persistence
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,10 +12,10 @@ Preserves admin list filters for Posts, Pages, and WooCommerce Products. Filters
 
 == Description ==
 
-Persistent Filters is a lightweight WordPress plugin that preserves admin list filters for Posts, Pages and WooCommerce Products. Once installed end activated, the plugin remembers filter selections like a search string, ordering, product status etc. Filters will be reapplied when you return to the corresponding list screen so you don't have to redo all filtering.
+Persistent Filters is a lightweight WordPress plugin that preserves admin list filters for Posts, Pages and WooCommerce Products and Orders. Once installed end activated, the plugin remembers filter selections like a search string, ordering, product status etc. Filters will be reapplied when you return to the corresponding list screen so you don't have to redo all filtering.
 
 Filters are reapplied automatically when you return to the corresponding list screen so you don't have to redo your filtering.  
-All filters are stored **per user per post type** (currently, `post`, `page`, and `product` are supported).  
+All filters are stored **per user per post type** (currently, `post`, `page`, `product` and `shop_order` are supported).  
 When a filter is stored for a specific post type, a **Reset Filters** button is added next to the admin list filter options.
 
 == Features ==
@@ -45,6 +45,10 @@ No, only the filters for the post type currently listed will be reset.
 Correct, that button is only shown when you actually used a filter for the current post type.
 
 == Changelog ==
+
+= 1.1.0 =
+* Fix: disabled fallbaclk by default, that could cause infinite loops
+* Added support for WooCommerce Orders
 
 = 1.0.1 =
 * Fixed an incomplete commit to svn

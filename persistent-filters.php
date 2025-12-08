@@ -1,12 +1,12 @@
 <?php
 /**
  * @package Persistent_Filters
- * @version 1.0.1
+ * @version 1.1.0
  * Plugin Name: Persistent Filters
  * Plugin URI: https://github.com/oveas/persistent-filters
- * Description: This plugin enables flexible filter persistence per post type, including a reset button and safeguards. Works for WordPress posts and pages, and Woocommerce products.
+ * Description: This plugin enables flexible filter persistence per post type, including a reset button and safeguards. Works for WordPress posts and pages, and Woocommerce products and orders.
  * Author: Oveas Functionality Provider
- * Version: 1.0.1
+ * Version: 1.1.0
  * Tested up to: 6.9
  * License: GPLv2 or later
  * Author URI: http://oveas.com/
