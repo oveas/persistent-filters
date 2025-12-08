@@ -11,7 +11,6 @@ Filters are stored per user per post type (currently `post`, `page` and `product
 - Remember multiple filter types like date, categories, search terms and ordering.
 - Per-listing persistence (each post type keeps its own set of filters).
 - Lightweight: minimal performance overhead and no external dependencies.
-- For unknown post types, search string and ordering are stored..
 
 ## Installation
 1. Upload the plugin folder to `/wp-content/plugins/persistent-filters` or install via the admin Plugins → Add New → Upload Plugin.

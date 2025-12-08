@@ -66,8 +66,15 @@ class Persistent_Filters
 			exit;
 		}
 
+		// If no allowed keys for this post type and fallback is disabled, do nothing
+		// This check must be after the reset above to make sure saved filters can still be removed after
+		// fallback has been disabled.
+		if ('yes' != $this->settings['fallback-enabled'] && !isset($this->settings['keys-allowed'][$post_type])) {
+			return;
+		}
+
 		// Check if filters are set in the URL. If so, save them.
-		$keys_allowed = $this->settings['keys-allowed'][$post_type] ?? ('yes' == $this->settings['fallback-enabled'] ? $this->settings['keys-fallback'] : []);
+		$keys_allowed = isset($this->settings['keys-allowed'][$post_type]) ? $this->settings['keys-allowed'][$post_type] : $this->settings['keys-fallback'];
 		if (!empty($_GET) && (count($_GET) > 1 || isset($_GET['orderby']))) {
 			$new_query = array_intersect_key($_GET, array_flip($keys_allowed));
 			$query_string = http_build_query($new_query, '', '&');

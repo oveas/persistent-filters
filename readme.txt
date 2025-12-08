@@ -24,7 +24,6 @@ When a filter is stored for a specific post type, a **Reset Filters** button is 
 * Remembers filter types like date, categories, search terms and ordering.
 * Per-listing persistence (each post type maintains its own stored filters).
 * Lightweight with minimal performance impact.
-* For unknown post types, search string and ordering are stored.
 
 == Installation ==
 

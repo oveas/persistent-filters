@@ -79,7 +79,7 @@ class Persistent_Filters_Config
 				, 'keys-fallback' => ['post_type','orderby','order','s'] // Default filters for unknown post types (fallback)
 				, 'export-params' => ['export','download','order_status','start_date','end_date'] // Don't set filters when used for export
 				, 'ignore-export' => 'yes'
-				, 'fallback-enabled' => 'yes'
+				, 'fallback-enabled' => 'no'
 		    ];
 	}
 }
