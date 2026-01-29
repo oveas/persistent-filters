@@ -12,7 +12,7 @@ msgstr ""
 "<translations@example."
 "com>\n"
 "POT-Creation-Date: "
-"2025-11-22 13:40+0100\n"
+"2026-01-29 15:25+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Your "
 "Name <you@example.com>\n"
@@ -51,6 +51,49 @@ msgstr ""
 "X-Poedit-"
 "SearchPath-0: .\n"
 
-#: includes/persistent_filters.php:151
+#: includes/persistent_filters.php:167
 msgid "Reset filters"
+msgstr ""
+
+#: includes/persistent_filters_clean.php:34
+#: includes/persistent_filters_clean.php:51
+msgid "Reset all filters"
+msgstr ""
+
+#: includes/persistent_filters_clean.php:54
+msgid ""
+"This will remove all "
+"persistent filters for "
+"all post types."
+msgstr ""
+
+#: includes/persistent_filters_clean.php:56
+msgid "For me only"
+msgstr ""
+
+#: includes/persistent_filters_clean.php:57
+msgid "For all users"
+msgstr ""
+
+#: includes/persistent_filters_clean.php:62
+msgid "Remove filters"
+msgstr ""
+
+#: includes/persistent_filters_clean.php:63
+msgid "Cancel"
+msgstr ""
+
+#: includes/persistent_filters_clean.php:148
+msgid ""
+"All filters have been "
+"reset"
+msgstr ""
+
+#: includes/persistent_filters_clean.php:149
+msgid "for all users."
+msgstr ""
+
+#: includes/persistent_filters_clean.php:149
+msgid ""
+"for your user only."
 msgstr ""
