@@ -25,8 +25,10 @@ class Persistent_Filters
 	public function __construct()
 	{
 		require_once plugin_dir_path( __FILE__ ) . 'persistent_filters_config.php';
+		require_once plugin_dir_path( __FILE__ ) . 'persistent_filters_clean.php';
 		$this->settings = Persistent_Filters_Config::getInstance()->getDefaults();
-		
+
+		$cleaner = new Persistent_Filters_Clean();
 		add_action('load-edit.php', array($this, 'setFilters'), 30, 0);
 		add_action('restrict_manage_posts', array($this, 'resetFilters'), 30, 1);
 		add_filter('views_edit-product', array($this, 'alterViewLinks'), 30, 1);

@@ -15,24 +15,16 @@
 if (!defined('ABSPATH')) {
 	die;
 }
+define('PERSISTENT_FILTERS_MAIN_FILE', __FILE__);
 
 /**
  * Uninstall this plugin
  */
 function Persistent_Filters_Uninstall()
 {
-	$query = new WP_User_Query(
-		array('capability' => 'edit_posts', 'fields'  => 'ID')
-	);
-	$adm_ids = $query->get_results();
-
-	$settings = Persistent_Filters_Config::getInstance()->getDefaults();
-	foreach ($settings['keys-allowed'] as $post_type => $url_filter_keys) {
-		$meta_key = "_persistent_filter_{$post_type}";
-		foreach ($adm_ids as $user_id) {
-			delete_user_meta ($user_id, $meta_key);
-		}
-	}
+	require_once plugin_dir_path( __FILE__ ) . 'includes/persistent_filters_clean.php';
+	$cleaner = new Persistent_Filters_Clean();
+	$cleaner->cleanFilters('all');
 }
 
 /**
