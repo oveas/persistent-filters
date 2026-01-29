@@ -79,17 +79,24 @@ class Persistent_Filters
 		$keys_allowed = isset($this->settings['keys-allowed'][$post_type]) ? $this->settings['keys-allowed'][$post_type] : $this->settings['keys-fallback'];
 		if (!empty($_GET) && (count($_GET) > 1 || isset($_GET['orderby']))) {
 			$new_query = array_intersect_key($_GET, array_flip($keys_allowed));
-			$query_string = http_build_query($new_query, '', '&');
-			update_user_meta($user_id, $meta_key, $query_string);
-			return;
+			if (count($new_query) > 1) { // Only save if there are supported filters
+				$query_string = http_build_query($new_query, '', '&');
+				update_user_meta($user_id, $meta_key, $query_string);
+				return;
+			}
 		}
 
 		// Reset filters when the querystring is empty
-		if ((isset($_GET['post_type']) && 1 === count($_GET))
+		if ((isset($_GET['post_type']))
 			|| (!isset($_GET['post_type']) && false !== strpos($_SERVER['REQUEST_URI'], 'edit.php'))) {
 			$saved = get_user_meta($user_id, $meta_key, true);
 			if ($saved) {
-				wp_safe_redirect(admin_url('edit.php?' . $saved));
+				$original_query = '';
+				if (count($_GET) > 1) { // Make sure quicklinks are added back
+					unset ($_GET['post_type']);
+					$original_query = '&' . http_build_query($_GET, '', '&');
+				}
+				wp_safe_redirect(admin_url('edit.php?' . $saved . $original_query));
 				exit;
 			}
 		}
