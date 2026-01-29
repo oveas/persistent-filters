@@ -11,10 +11,14 @@ Filters are stored per user per post type (currently `post`, `page`, `product` a
 - Remember multiple filter types like date, categories, search terms and ordering.
 - Per-listing persistence (each post type keeps its own set of filters).
 - Lightweight: minimal performance overhead and no external dependencies.
+- Option to remove all filters, for all users of only for the current user.
 
 ## Installation
-1. Upload the plugin folder to `/wp-content/plugins/persistent-filters` or install via the admin Plugins → Add New → Upload Plugin.
-2. Activate the plugin from the Plugins screen.
+
+- In the Admin menu select **Plugins**
+- Click the `Add Plugin` button
+- Look for the `Persistent Filters` plugin and click `Install now`
+- Activate Persistent Filters in the **Plugins** screen.
 
 ## Usage
 - Visit Posts → All Posts, Pages → All Pages, or Products → All Products.
@@ -41,6 +45,9 @@ A: No, only the filters for the post type currently listed will be reset.
 Q: I just installed and activated this plugin, but I don't see the Reset filter button.
 A: Correct, that button is only shown when you actually used a filter for the current post type.
 
+Q: Can I remove all filters at once? =
+A: Yes, in the **Plugins** screen in your Admin environment, click the `Reset all filters` link next to the `Deactivate` options. You will get a popup where you can select if you want to remove your own  filters only, or for all users.
+
 ## Contributing
 Contributions, bug reports and feature requests are welcome. Please open an issue or submit a pull request on the plugin repository.
 
@@ -52,3 +59,7 @@ GNU General Public License GPLv2 — see license.txt for details.
 - 1.1.0
   - Fix: disabled fallbaclk by default, that could cause infinite loops
   - Added support for WooCommerce Orders
+- 1.2.0 
+  - Fix: Don't add filters if only quicklinks are used, that also caused infite redirects
+  - Added an option to remove all filters
+  - Added Dutch translation

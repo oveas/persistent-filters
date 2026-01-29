@@ -4,7 +4,7 @@ Donate link:
 Tags: filters, admin, posts, woocommerce, persistence
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,11 +24,14 @@ When a filter is stored for a specific post type, a **Reset Filters** button is 
 * Remembers filter types like date, categories, search terms and ordering.
 * Per-listing persistence (each post type maintains its own stored filters).
 * Lightweight with minimal performance impact.
+* Option to remove all filters, for all users of only for the current user.
 
 == Installation ==
 
-1. Upload the plugin folder to `/wp-content/plugins/persistent-filters` or install via **Plugins → Add New → Upload Plugin**.
-2. Activate the plugin through the **Plugins** screen.
+1. In the Admin menu select **Plugins**
+2. Click the `Add Plugin` button
+3. Look for the `Persistent Filters` plugin and click `Install now`
+4. Activate Persistent Filters in the **Plugins** screen.
 
 == Frequently Asked Questions ==
 
@@ -44,7 +47,15 @@ No, only the filters for the post type currently listed will be reset.
 = I just installed the plugin, but I don't see the Reset Filters button. =
 Correct, that button is only shown when you actually used a filter for the current post type.
 
+= Can I remove all filters at once? =
+Yes, in the **Plugins** screen in your Admin environment, click the `Reset all filters` link next to the `Deactivate` options. You will get a popup where you can select if you want to remove your own  filters only, or for all users.
+
 == Changelog ==
+
+= 1.2.0 =
+* Fix: Don't add filters if only quicklinks are used, that also caused infite redirects
+* Added an option to remove all filters
+* Added Dutch translation
 
 = 1.1.0 =
 * Fix: disabled fallbaclk by default, that could cause infinite loops
