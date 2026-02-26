@@ -29,7 +29,7 @@ class Persistent_Filters
 		$this->settings = Persistent_Filters_Config::getInstance()->getDefaults();
 
 		$cleaner = new Persistent_Filters_Clean();
-		add_action('load-edit.php', array($this, 'setFilters'), 30, 0);
+		add_action('load-edit.php', array($this, 'setEditFilters'), 30, 0);
 		add_action('restrict_manage_posts', array($this, 'resetFilters'), 30, 1);
 		add_filter('views_edit-product', array($this, 'alterViewLinks'), 30, 1);
 	}
@@ -38,7 +38,7 @@ class Persistent_Filters
 	 * Take all given filters from the current URL and check for filter parameters.
 	 * If found, store them in user meta for the current user and post type.
 	 */
-	public function setFilters()
+	public function setEditFilters()
 	{
 		$post_type = isset($_GET['post_type']) ? sanitize_key($_GET['post_type']) : 'post';
 		$user_id   = get_current_user_id();
@@ -71,12 +71,12 @@ class Persistent_Filters
 		// If no allowed keys for this post type and fallback is disabled, do nothing
 		// This check must be after the reset above to make sure saved filters can still be removed after
 		// fallback has been disabled.
-		if ('yes' != $this->settings['fallback-enabled'] && !isset($this->settings['keys-allowed'][$post_type])) {
+		if ('yes' != $this->settings['edit']['fallback-enabled'] && !isset($this->settings['edit']['keys-allowed'][$post_type])) {
 			return;
 		}
 
 		// Check if filters are set in the URL. If so, save them.
-		$keys_allowed = isset($this->settings['keys-allowed'][$post_type]) ? $this->settings['keys-allowed'][$post_type] : $this->settings['keys-fallback'];
+		$keys_allowed = isset($this->settings['edit']['keys-allowed'][$post_type]) ? $this->settings['edit']['keys-allowed'][$post_type] : $this->settings['edit']['keys-fallback'];
 		if (!empty($_GET) && (count($_GET) > 1 || isset($_GET['orderby']))) {
 			$new_query = array_intersect_key($_GET, array_flip($keys_allowed));
 			if (count($new_query) > 1) { // Only save if there are supported filters
