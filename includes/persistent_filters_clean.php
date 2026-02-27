@@ -167,20 +167,23 @@ class Persistent_Filters_Clean
 			);
 	
 			$adm_ids = $query->get_results();
-			foreach ($settings['keys-allowed'] as $post_type => $url_filter_keys) {
-				$meta_key = "_persistent_filter_{$post_type}";
-				foreach ($adm_ids as $user_id) {
-					// FIXME: Doesn't work on uninstall
-					delete_user_meta ($user_id, $meta_key);
+			foreach ($settings['pages'] as $page => $pages) {
+				foreach ($settings['pages'][$page]['keys-allowed'] as $post_type => $url_filter_keys) {
+					$meta_key = "_persistent_filter_{$page}_{$post_type}";
+					foreach ($adm_ids as $user_id) {
+						delete_user_meta ($user_id, $meta_key);
+					}
 				}
 			}
 			return;
 		}
 
 		$user_id = get_current_user_id();
-		foreach ($settings['keys-allowed'] as $post_type => $url_filter_keys) {
-			$meta_key = "_persistent_filter_{$post_type}";
-			delete_user_meta ($user_id, $meta_key);
+		foreach ($settings['pages'] as $page => $pages) {
+			foreach ($settings['pages'][$page]['keys-allowed'] as $post_type => $url_filter_keys) {
+				$meta_key = "_persistent_filter_{$page}_{$post_type}";
+				delete_user_meta ($user_id, $meta_key);
+			}
 		}
 	}
 }
