@@ -1,15 +1,15 @@
 # Persistent Filters for WordPress
 
-Persistent Filters is a lightweight WordPress plugin that preserves admin list filters for Posts, Pages and WooCommerce Products. Once installed end activated, the plugin remembers filter selections like a search string, ordering, product status etc.
+Persistent Filters is a lightweight WordPress plugin that preserves admin list filters for Posts, Pages and some WooCommerce listings (products, orders and coupons). Once installed and activated, the plugin remembers filter selections like a search string, ordering, product status etc.
 Filters will be reapplied when you return to the corresponding list screen so you don't have to redo all filtering.
 
-Filters are stored per user per post type (currently `post`, `page`, `product` and `shop_order`). When a filter a stored for a certain post type, a `Reset Filter` button is added next to the filter options in the post listing.
+Filters are stored per user per listing. When a filter is stored for a certain listing type, a `Reset Filter` button is added next to the filter options in the listing.
 
 
 ## Features
-- Persist filters for Posts, Pages and WooCommerce Products in the admin lists.
+- Persistent filters for Posts, Pages and WooCommerce Products, Orders and Coupons in the admin lists.
 - Remember multiple filter types like date, categories, search terms and ordering.
-- Per-listing persistence (each post type keeps its own set of filters).
+- Per-listing persistence (each listing type keeps its own set of filters).
 - Lightweight: minimal performance overhead and no external dependencies.
 - Option to remove all filters, for all users of only for the current user.
 
@@ -21,7 +21,7 @@ Filters are stored per user per post type (currently `post`, `page`, `product` a
 - Activate Persistent Filters in the **Plugins** screen.
 
 ## Usage
-- Visit Posts → All Posts, Pages → All Pages, or Products → All Products.
+- Visit Posts → All Posts, Pages → All Pages, Products → All Products or anu other support listing page.
 - Configure the filters you need (status, date, search, etc.) and click Filter.
 - The plugin will automatically save those filter settings for the current user and post type.
 - When you return to that list screen, your filters are reapplied automatically.
@@ -63,3 +63,6 @@ GNU General Public License GPLv2 — see license.txt for details.
   - Fix: Don't add filters if only quicklinks are used, that also caused infite redirects
   - Added an option to remove all filters
   - Added Dutch translation
+- 1.3.0
+  - Changed the localization to the officially supported way
+  - Added support for WooCommerce coupons and HPOS orders
