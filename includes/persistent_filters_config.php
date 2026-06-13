@@ -55,15 +55,6 @@ class Persistent_Filters_Config
 	}
 
 	/**
-	 * Return the version of this plugin
-	 * @return	string	Plugin version
-	 */
-	public function getVersion()
-	{
-		return $this->version;
-	}
-
-	/**
 	 * Set default values
 	 * @return	array
 	 */
@@ -89,7 +80,9 @@ class Persistent_Filters_Config
 				, 'admin' => [
 					  'keys-allowed' => [
 						  'wc-orders' => ['page', 's', 'search-filter', 'm', '_created_via', '_customer_user']
+						, 'simple_history_admin_menu_page' => ['page', 'messages', 'date', 'users', 'q', 'exclude-users', 'levels', 'metadata', 'context']
 					  ]
+					, 'needs-ajax' => ['simple_history_admin_menu_page'] // Pages that need AJAX support for filters to work properly
 					, 'fallback-enabled' => 'no'
 					, 'keys-fallback'    => ['s','orderby','order']
 				]

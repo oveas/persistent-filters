@@ -30,10 +30,58 @@ class Persistent_Filters
 
 		$cleaner = new Persistent_Filters_Clean();
 		add_action('load-edit.php', array($this, 'setEditFilters'), 30, 0);
+		add_action('wp_ajax_persistent_filters_update', array($this, 'handleAjaxFilterUpdate'));
 		add_action('load-woocommerce_page_wc-orders', array($this, 'setAdminFilters'), 30, 0);
 
 		add_action('restrict_manage_posts', array($this, 'resetEditFilters'), 30, 1);
 		add_action('woocommerce_order_list_table_restrict_manage_orders', array($this, 'resetAdminFilters'), 30, 1);
+
+		add_action('admin_enqueue_scripts', array($this, 'enqueueAdminScripts'));
+		add_action('admin_init', array($this, 'checkForAdminFilters'), 5);
+	}
+
+	/**
+	 * Apply saved filters for pages that don´t have their own filter handling
+	 */
+	public function checkForAdminFilters()
+	{
+		if (!is_admin()) {
+			return;
+		}
+		if (isset($_GET['page']) && array_key_exists($_GET['page'], $this->settings['pages']['admin']['keys-allowed'])) {
+			$this->setFilters('admin', $_GET);
+		}
+	}
+
+	/**
+	 * Enqueue admin scripts on admin pages that require AJAX support for filters to work properly
+	 */
+	public function enqueueAdminScripts()
+	{
+		if ((isset($_GET['page']) && in_array($_GET['page'], $this->settings['pages']['admin']['needs-ajax'], true))) {
+			wp_enqueue_script(
+				'persistent-filters-admin',
+				plugin_dir_url(PERSISTENT_FILTERS_MAIN_FILE) . 'js/persistent_filters.js',
+				array(),
+				PERSISTENT_FILTERS_VERSION,
+				true
+			);
+
+			// Localize the script with nonce and other data
+			wp_localize_script('persistent-filters-admin', 'pf_data', array(
+				'nonce' => wp_create_nonce('persistent_filters_nonce')
+			));
+		}
+	}
+
+	/**
+	 * Handle AJAX call from JavaScript to update filters for pages that need AJAX support
+	 */
+	public function handleAjaxFilterUpdate()
+	{
+		check_ajax_referer('persistent_filters_nonce', 'nonce');
+		$this->setFilters('admin', $_POST);
+		wp_send_json_success(array('message' => 'Filters updated'));
 	}
 	
 	public function setEditFilters()
@@ -43,46 +91,55 @@ class Persistent_Filters
 
 	public function setAdminFilters()
 	{
-		$this->setFilters('admin');
+		$this->setFilters('admin', $_REQUEST);
 	}
 
 	/**
 	 * Take all given filters from the current URL and check for filter parameters.
 	 * If found, store them in user meta for the current user and post type.
 	 * @param	string $page	Current page
+	 * @param	array|null $request	Request parameters to check for filters. If null, $_REQUEST will be used.
 	 */
-	public function setFilters($page = 'edit')
+	public function setFilters($page = 'edit', $request = null)
 	{
+		if ($request === null) {
+			if ($_REQUEST) {
+				$request = $_REQUEST;
+			} else {
+				return;
+			}
+		}
+
 		if ($page == 'edit') {
-			$post_type = isset($_GET['post_type']) ? sanitize_key($_GET['post_type']) : 'post';
+			$post_type = isset($request['post_type']) ? sanitize_key($request['post_type']) : 'post';
 			$meta_key  = "_persistent_filter_{$page}_{$post_type}";
 		} elseif ($page == 'admin') {
-			$post_type = isset($_GET['page']) ? sanitize_key($_GET['page']) : 'wc-orders';
+			$post_type = isset($request['page']) ? sanitize_key($request['page']) : 'wc-orders';
 			$meta_key  = "_persistent_filter_{$page}_{$post_type}";
 		} else {
 			return; // Safety net
 		}
 		$user_id   = get_current_user_id();
 
-		if ((isset($_REQUEST['action']) && in_array($_REQUEST['action'], $this->settings['keys-ignored'], true)) ||
-			(isset($_REQUEST['action2']) && in_array($_REQUEST['action2'], $this->settings['keys-ignored'], true))) {
+		if ((isset($request['action']) && in_array($request['action'], $this->settings['keys-ignored'], true)) ||
+			(isset($request['action2']) && in_array($request['action2'], $this->settings['keys-ignored'], true))) {
 			return;
 		}
 
 		if ('yes' == $this->settings['ignore-export']) {
 			foreach ($this->settings['export-params'] as $param) {
-				if (isset($_REQUEST[$param])) {
+				if (isset($request[$param])) {
 					return;
 				}
 			}
 		}
 
-		if (isset($_REQUEST['_wpnonce']) || isset($_REQUEST['_wp_http_referer'])) {
+		if (isset($request['_wpnonce']) || isset($request['_wp_http_referer'])) {
 			return;
 		}
 
 		// Reset filters
-		if (isset($_GET['reset_filters'])) {
+		if (isset($request['reset_filters'])) {
 			delete_user_meta($user_id, $meta_key);
 			if ($page == 'edit') {
 				wp_safe_redirect(admin_url('edit.php?post_type=' . $post_type));
@@ -103,33 +160,48 @@ class Persistent_Filters
 
 		// Check if filters are set in the URL. If so, save them.
 		$keys_allowed = isset($this->settings['pages'][$page]['keys-allowed'][$post_type]) ? $this->settings['pages'][$page]['keys-allowed'][$post_type] : $this->settings['pages'][$page]['keys-fallback'];
-		if (!empty($_GET) && (count($_GET) > 1 || isset($_GET['orderby']))) {
-			$new_query = array_intersect_key($_GET, array_flip($keys_allowed));
+		if (!empty($request) && (count($request) > 1 || isset($request['orderby']))) {
+			$new_query = array_intersect_key($request, array_flip($keys_allowed));
 			if (count($new_query) > 1) { // Only save if there are supported filters
-				$query_string = http_build_query($new_query, '', '&');
-				update_user_meta($user_id, $meta_key, $query_string);
+				// Store filters as an array (not as a URL-encoded string) so values are preserved
+				update_user_meta($user_id, $meta_key, $new_query);
 				return;
 			}
 		}
 
-		if (($page == 'edit' && (isset($_GET['post_type']))
-			|| (!isset($_GET['post_type']) && false !== strpos($_SERVER['REQUEST_URI'], 'edit.php')))
-		  || ($page == 'admin' && (isset($_GET['page']))
-		  	|| (!isset($_GET['page']) && false !== strpos($_SERVER['REQUEST_URI'], 'admin.php')))
+		if (($page == 'edit' && (isset($request['post_type']))
+			|| (!isset($request['post_type']) && false !== strpos($_SERVER['REQUEST_URI'], 'edit.php')))
+		  || ($page == 'admin' && (isset($request['page']))
+		    || (!isset($request['page']) && false !== strpos($_SERVER['REQUEST_URI'], 'admin.php')))
 		) {
 			$saved = get_user_meta($user_id, $meta_key, true);
+			error_log('Saved filters (raw): ' . var_export($saved, true));
 			if ($saved) {
-				$original_query = '';
-				if (count($_GET) > 1) { // Make sure quicklinks are added back
-					if ($page == 'edit') {
-						unset ($_GET['post_type']);
-					} elseif ($page == 'admin') {
-						unset ($_GET['page']);
-					}
-					$original_query = '&' . http_build_query($_GET, '', '&');
+				// Normalize saved filters to an array for consistent handling.
+				if (is_string($saved)) {
+					// Backwards compatibility: saved value might be a URL-encoded query string.
+					parse_str($saved, $saved_array);
+				} elseif (is_array($saved)) {
+					$saved_array = $saved;
+				} else {
+					$saved_array = array();
 				}
-				wp_safe_redirect(admin_url($page . '.php?' . $saved . $original_query));
-				exit;
+
+				if (!empty($saved_array)) {
+					$original_query = '';
+					if (count($request) > 1) { // Make sure quicklinks are added back
+						if ($page == 'edit') {
+							unset ($request['post_type']);
+						} elseif ($page == 'admin') {
+							unset ($request['page']);
+						}
+						$original_query = '&' . http_build_query($request, '', '&');
+					}
+
+					$saved_query = http_build_query($saved_array, '', '&');
+					wp_safe_redirect(admin_url($page . '.php?' . $saved_query . $original_query));
+					exit;
+				}
 			}
 		}
 	}

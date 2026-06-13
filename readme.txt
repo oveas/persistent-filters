@@ -2,9 +2,9 @@
 Contributors: oveas
 Donate link:
 Tags: filters, admin, posts, woocommerce, persistence
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,11 +19,15 @@ All filters are stored **per user per listing**. When a filter is stored for a s
 
 == Features ==
 
-* Persistent filters for Posts, Pages and WooCommerce Products, Orders and Coupons in the admin lists.
+* Persistent filters for
+  * Posts
+  * Pages
+  * WooCommerce Products, Orders and Coupons
+  * Simple History
 * Remembers filter types like date, categories, search terms and ordering.
 * Per-listing persistence (each post type maintains its own stored filters).
 * Lightweight with minimal performance impact.
-* Option to remove all filters, for all users of only for the current user.
+* Option to remove all filters, for all users or only for the current user.
 
 == Installation ==
 
@@ -47,9 +51,12 @@ No, only the filters for the post type currently listed will be reset.
 Correct, that button is only shown when you actually used a filter for the current post type.
 
 = Can I remove all filters at once? =
-Yes, in the **Plugins** screen in your Admin environment, click the `Reset all filters` link next to the `Deactivate` options. You will get a popup where you can select if you want to remove your own  filters only, or for all users.
+Yes, in the **Plugins** screen in your Admin environment, click the `Reset all filters` link next to the `Deactivate` option. You will get a popup where you can select if you want to remove your own filters only, or for all users.
 
 == Changelog ==
+
+= 1.3.1 =
+* Added support for Simple History
 
 = 1.3.0 =
 * Changed the localization to the officially supported way
