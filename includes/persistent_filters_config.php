@@ -68,11 +68,12 @@ class Persistent_Filters_Config
 			, 'pages' => [
 				  'edit' => [
 					  'keys-allowed' => [
-						  'post'        => ['post_type','cat','orderby','order','s']
-						, 'page'        => ['post_type','orderby','order','s','m', 'cat']
-						, 'product'     => ['post_type','product_cat','stock_status','product_type','product_brand','orderby','order','s']
-						, 'shop_order'  => ['post_type','m','_created_via','_customer_user','orderby','order','s']
-						, 'shop_coupon' => ['post_type','coupon_type','s']
+						  'post'         => ['post_type','cat','orderby','order','s']
+						, 'page'         => ['post_type','orderby','order','s','m', 'cat']
+						, 'product'      => ['post_type','product_cat','stock_status','product_type','product_brand','orderby','order','s']
+						, 'shop_order'   => ['post_type','m','_created_via','_customer_user','orderby','order','s']
+						, 'shop_coupon'  => ['post_type','coupon_type','s']
+						, 'tribe_events' => ['post_type','orderby','order','s']
 					  ]
 					, 'fallback-enabled' => 'no'
 					, 'keys-fallback'    => ['post_type','orderby','order','s']

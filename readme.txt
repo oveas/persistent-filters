@@ -24,6 +24,7 @@ All filters are stored **per user per listing**. When a filter is stored for a s
   * Pages
   * WooCommerce Products, Orders and Coupons
   * Simple History
+  * The Events Calendar
 * Remembers filter types like date, categories, search terms and ordering.
 * Per-listing persistence (each post type maintains its own stored filters).
 * Lightweight with minimal performance impact.
@@ -56,7 +57,7 @@ Yes, in the **Plugins** screen in your Admin environment, click the `Reset all f
 == Changelog ==
 
 = 1.3.1 =
-* Added support for Simple History
+* Added support for Simple History and The Events Calendar
 
 = 1.3.0 =
 * Changed the localization to the officially supported way

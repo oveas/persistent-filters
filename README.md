@@ -12,6 +12,7 @@ Filters are stored per user per listing. When a filter is stored for a certain l
   - Pages
   - WooCommerce Products, Orders and Coupons
   - Simple History
+  - The Events Calendar
 - Remember multiple filter types like date, categories, search terms and ordering.
 - Per-listing persistence (each listing type keeps its own set of filters).
 - Lightweight: minimal performance overhead and no external dependencies.
@@ -71,4 +72,4 @@ GNU General Public License GPLv2 — see license.txt for details.
   - Changed the localization to the officially supported way
   - Added support for WooCommerce coupons and HPOS orders
 - 1.3.1
-  - Added support for Simple History
+  - Added support for Simple History and The Events Calendar
