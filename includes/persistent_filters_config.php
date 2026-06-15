@@ -84,6 +84,7 @@ class Persistent_Filters_Config
 						, 'simple_history_admin_menu_page' => ['page', 'messages', 'date', 'users', 'q', 'exclude-users', 'levels', 'metadata', 'context']
 					  ]
 					, 'needs-ajax' => ['simple_history_admin_menu_page'] // Pages that need AJAX support for filters to work properly
+					, 'ajax-endpoints'   => ['simple-history', '/simple-history/']
 					, 'fallback-enabled' => 'no'
 					, 'keys-fallback'    => ['s','orderby','order']
 				]

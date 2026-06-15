@@ -60,16 +60,31 @@ class Persistent_Filters
 	{
 		if ((isset($_GET['page']) && in_array($_GET['page'], $this->settings['pages']['admin']['needs-ajax'], true))) {
 			wp_enqueue_script(
-				'persistent-filters-admin',
-				plugin_dir_url(PERSISTENT_FILTERS_MAIN_FILE) . 'js/persistent_filters.js',
-				array(),
-				PERSISTENT_FILTERS_VERSION,
-				true
+				  'persistent-filters-admin'
+				, plugin_dir_url(PERSISTENT_FILTERS_MAIN_FILE) . 'js/persistent_filters.js'
+				, array()
+				, PERSISTENT_FILTERS_VERSION
+				, true
 			);
 
 			// Localize the script with nonce and other data
+			// Prepare saved filters for the current page (backwards compatible)
+			$page = sanitize_text_field($_GET['page']);
+			$meta_key = "_persistent_filter_admin_{$page}";
+			$user_id = get_current_user_id();
+			$saved = get_user_meta($user_id, $meta_key, true);
+			if (is_string($saved)) {
+				parse_str($saved, $saved_array);
+			} elseif (is_array($saved)) {
+				$saved_array = $saved;
+			} else {
+				$saved_array = array();
+			}
+
 			wp_localize_script('persistent-filters-admin', 'pf_data', array(
-				'nonce' => wp_create_nonce('persistent_filters_nonce')
+				  'nonce' => wp_create_nonce('persistent_filters_nonce')
+				, 'saved_filters' => $saved_array
+				, 'endpoints' => $this->settings['pages']['admin']['ajax-endpoints']
 			));
 		}
 	}
@@ -175,7 +190,6 @@ class Persistent_Filters
 		    || (!isset($request['page']) && false !== strpos($_SERVER['REQUEST_URI'], 'admin.php')))
 		) {
 			$saved = get_user_meta($user_id, $meta_key, true);
-			error_log('Saved filters (raw): ' . var_export($saved, true));
 			if ($saved) {
 				// Normalize saved filters to an array for consistent handling.
 				if (is_string($saved)) {
@@ -206,14 +220,25 @@ class Persistent_Filters
 		}
 	}
 
+	/**
+	 * Reset filters for the given post type at the edit screen
+	 * @param	string $post_type	Post type to reset filters for
+	 */
 	public function resetEditFilters($post_type)
 	{
 		$this->resetFilters($post_type, 'edit');
 	}
 
+	/**
+	 * Reset filters for the given post type at the admin screen
+	 * @param	string $post_type	Post type to reset filters for
+	 */
 	public function resetAdminFilters($post_type)
 	{
-		$this->resetFilters('wc-orders', 'admin'); // Given post_type is 'shop_order', translage to the page.
+		$translated_post_type = [
+			  'shop_order' => 'wc-orders'
+		];
+		$this->resetFilters($translated_post_type[$post_type] ?? $post_type, 'admin');
 	}
 
 	/**
