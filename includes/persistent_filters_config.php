@@ -88,6 +88,13 @@ class Persistent_Filters_Config
 					, 'fallback-enabled' => 'no'
 					, 'keys-fallback'    => ['s','orderby','order']
 				]
+				, 'users' => [
+					  'keys-allowed' => [
+						  'all' => ['s','orderby','order']
+					  ]
+					, 'fallback-enabled' => 'no'
+					, 'keys-fallback'    => ['s','orderby','order']
+				]
 			]
 		];
 

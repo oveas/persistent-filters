@@ -10,6 +10,7 @@ Filters are stored per user per listing. When a filter is stored for a certain l
 - Persistent filters for
   - Posts
   - Pages
+  - Users
   - WooCommerce Products, Orders and Coupons
   - Simple History
   - The Events Calendar
@@ -72,4 +73,4 @@ GNU General Public License GPLv2 — see license.txt for details.
   - Changed the localization to the officially supported way
   - Added support for WooCommerce coupons and HPOS orders
 - 1.3.1
-  - Added support for Simple History and The Events Calendar
+  - Added support for Simple History, The Events Calendar and Users

@@ -22,6 +22,7 @@ All filters are stored **per user per listing**. When a filter is stored for a s
 * Persistent filters for
   * Posts
   * Pages
+  * Users
   * WooCommerce Products, Orders and Coupons
   * Simple History
   * The Events Calendar
@@ -57,7 +58,7 @@ Yes, in the **Plugins** screen in your Admin environment, click the `Reset all f
 == Changelog ==
 
 = 1.3.1 =
-* Added support for Simple History and The Events Calendar
+* Added support for Simple History, The Events Calendar and Users
 
 = 1.3.0 =
 * Changed the localization to the officially supported way

@@ -30,10 +30,12 @@ class Persistent_Filters
 
 		$cleaner = new Persistent_Filters_Clean();
 		add_action('load-edit.php', array($this, 'setEditFilters'), 30, 0);
+		add_action('load-users.php', array($this, 'setUsersFilters'), 30, 0);
 		add_action('wp_ajax_persistent_filters_update', array($this, 'handleAjaxFilterUpdate'));
 		add_action('load-woocommerce_page_wc-orders', array($this, 'setAdminFilters'), 30, 0);
 
 		add_action('restrict_manage_posts', array($this, 'resetEditFilters'), 30, 1);
+		add_action('restrict_manage_users', array($this, 'resetUsersFilters'), 30);
 		add_action('woocommerce_order_list_table_restrict_manage_orders', array($this, 'resetAdminFilters'), 30, 1);
 
 		add_action('admin_enqueue_scripts', array($this, 'enqueueAdminScripts'));
@@ -104,6 +106,11 @@ class Persistent_Filters
 		$this->setFilters('edit');
 	}
 
+	public function setUsersFilters()
+	{
+		$this->setFilters('users');
+	}
+
 	public function setAdminFilters()
 	{
 		$this->setFilters('admin', $_REQUEST);
@@ -120,14 +127,16 @@ class Persistent_Filters
 		if ($request === null) {
 			if ($_REQUEST) {
 				$request = $_REQUEST;
-			} else {
+			} elseif ($page !== 'users') {
 				return;
 			}
 		}
-
 		if ($page == 'edit') {
 			$post_type = isset($request['post_type']) ? sanitize_key($request['post_type']) : 'post';
 			$meta_key  = "_persistent_filter_{$page}_{$post_type}";
+		} elseif ($page == 'users') {
+			$meta_key  = "_persistent_filter_{$page}_all";
+			$post_type = 'all';
 		} elseif ($page == 'admin') {
 			$post_type = isset($request['page']) ? sanitize_key($request['page']) : 'wc-orders';
 			$meta_key  = "_persistent_filter_{$page}_{$post_type}";
@@ -135,7 +144,6 @@ class Persistent_Filters
 			return; // Safety net
 		}
 		$user_id   = get_current_user_id();
-
 		if ((isset($request['action']) && in_array($request['action'], $this->settings['keys-ignored'], true)) ||
 			(isset($request['action2']) && in_array($request['action2'], $this->settings['keys-ignored'], true))) {
 			return;
@@ -158,6 +166,8 @@ class Persistent_Filters
 			delete_user_meta($user_id, $meta_key);
 			if ($page == 'edit') {
 				wp_safe_redirect(admin_url('edit.php?post_type=' . $post_type));
+			} elseif ($page == 'users') {
+				wp_safe_redirect(admin_url('users.php'));
 			} elseif ($page == 'admin') {
 				wp_safe_redirect(admin_url('admin.php?page=' . $post_type));
 			} else {
@@ -176,8 +186,9 @@ class Persistent_Filters
 		// Check if filters are set in the URL. If so, save them.
 		$keys_allowed = isset($this->settings['pages'][$page]['keys-allowed'][$post_type]) ? $this->settings['pages'][$page]['keys-allowed'][$post_type] : $this->settings['pages'][$page]['keys-fallback'];
 		if (!empty($request) && (count($request) > 1 || isset($request['orderby']))) {
+
 			$new_query = array_intersect_key($request, array_flip($keys_allowed));
-			if (count($new_query) > 1) { // Only save if there are supported filters
+			if (count($new_query) > 1 || (isset($request['s']) && $page === 'users')) { // Only save if there are supported filters
 				// Store filters as an array (not as a URL-encoded string) so values are preserved
 				update_user_meta($user_id, $meta_key, $new_query);
 				return;
@@ -186,6 +197,7 @@ class Persistent_Filters
 
 		if (($page == 'edit' && (isset($request['post_type']))
 			|| (!isset($request['post_type']) && false !== strpos($_SERVER['REQUEST_URI'], 'edit.php')))
+		  || ($page == 'users' && false !== strpos($_SERVER['REQUEST_URI'], 'users.php'))
 		  || ($page == 'admin' && (isset($request['page']))
 		    || (!isset($request['page']) && false !== strpos($_SERVER['REQUEST_URI'], 'admin.php')))
 		) {
@@ -203,18 +215,24 @@ class Persistent_Filters
 
 				if (!empty($saved_array)) {
 					$original_query = '';
-					if (count($request) > 1) { // Make sure quicklinks are added back
+					if ($request && (count($request) > 1 || $page === 'users')) { // Make sure quicklinks are added back
 						if ($page == 'edit') {
 							unset ($request['post_type']);
 						} elseif ($page == 'admin') {
 							unset ($request['page']);
 						}
 						$original_query = '&' . http_build_query($request, '', '&');
+					} else {
+						$original_query = '';
 					}
 
 					$saved_query = http_build_query($saved_array, '', '&');
-					wp_safe_redirect(admin_url($page . '.php?' . $saved_query . $original_query));
-					exit;
+
+					if (!$request || $saved_query !== http_build_query($request, '', '&')) {
+						// Extra check to avoid redirect loops: only redirect if the saved query is different from the current request.
+						wp_safe_redirect(admin_url($page . '.php?' . $saved_query . $original_query));
+						exit;
+					}
 				}
 			}
 		}
@@ -227,6 +245,13 @@ class Persistent_Filters
 	public function resetEditFilters($post_type)
 	{
 		$this->resetFilters($post_type, 'edit');
+	}
+
+	/**
+	 * Reset filters for the users list
+	 */	public function resetUsersFilters()
+	{
+		$this->resetFilters('all', 'users');
 	}
 
 	/**
@@ -267,12 +292,18 @@ class Persistent_Filters
 					]
 					, admin_url('admin.php')
 				);
+			} elseif ($page == 'users') {
+				$reset_url = add_query_arg([
+						  'reset_filters' => 1
+					]
+					, admin_url('users.php')
+				);
 			} else {
 				return; // Safety net
 			}
 			echo '<a href="'
 				. esc_url($reset_url)
-				. '" class="button" style="float:right; margin-right:5px;">'
+				. '" class="button" style="float:right; margin-left:5px; margin-right:5px;">'
 				. esc_html(__('Reset filters', 'persistent-filters'))
 				. '</a>';
 		}
