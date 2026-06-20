@@ -12,7 +12,7 @@ msgstr ""
 "<translations@example."
 "com>\n"
 "POT-Creation-Date: "
-"2026-01-29 15:25+0100\n"
+"2026-06-20 12:20+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Your "
 "Name <you@example.com>\n"
@@ -51,7 +51,7 @@ msgstr ""
 "X-Poedit-"
 "SearchPath-0: .\n"
 
-#: includes/persistent_filters.php:167
+#: includes/persistent_filters.php:307
 msgid "Reset filters"
 msgstr ""
 
