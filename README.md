@@ -1,6 +1,6 @@
 # Persistent Filters for WordPress
 
-Persistent Filters is a lightweight WordPress plugin that preserves admin list filters for Posts, Pages and some WooCommerce listings (products, orders and coupons). Once installed and activated, the plugin remembers filter selections like a search string, ordering, product status etc.
+Persistent Filters is a lightweight WordPress plugin that preserves admin list filters for Posts and Pages, WooCommerce listings (products, orders and coupons) and more. Once installed and activated, the plugin remembers filter selections like a search string, ordering, product status etc.
 Filters will be reapplied when you return to the corresponding list screen so you don't have to redo all filtering.
 
 Filters are stored per user per listing. When a filter is stored for a certain listing type, a `Reset Filter` button is added next to the filter options in the listing.
@@ -63,7 +63,7 @@ GNU General Public License GPLv2 — see license.txt for details.
 ## Changelog (short)
 - 1.0.0 — Initial release: Posts, Pages and WooCommerce product filter persistence.
 - 1.1.0
-  - Fix: disabled fallbaclk by default, that could cause infinite loops
+  - Fix: disabled fallback by default, that could cause infinite loops
   - Added support for WooCommerce Orders
 - 1.2.0 
   - Fix: Don't add filters if only quicklinks are used, that also caused infite redirects
