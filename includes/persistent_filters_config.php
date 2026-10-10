@@ -60,7 +60,6 @@ class Persistent_Filters_Config
 	 */
 	public function getDefaults()
 	{
-
 		return [
 			  'keys-ignored'     => ['edit','trash','delete','untrash','bulk-edit'] // Bulk actions - never make them persistent
 			, 'export-params'    => ['export','download','order_status','start_date','end_date'] // Don't set filters when used for export
@@ -97,6 +96,40 @@ class Persistent_Filters_Config
 				]
 			]
 		];
-
 	}
+
+    /**
+     * Get the default pages to save filters for
+     * @return	array	List of supported pages and keys
+     */
+    private function getSupportedPagesKeys()
+    {
+        $settings = Persistent_Filters_Config::getInstance()->getDefaults();
+        $pages = array();
+        foreach ( $settings['pages'] as $page => $page_settings ) {
+            $pages[$page] = array();
+            foreach ( $page_settings['keys-allowed'] as $post_type => $url_filter_keys ) {
+                $pages[$page][] = $post_type;
+            }
+        }
+        return $pages;
+    }
+
+    /**
+     * Get the user's settings
+     * @return	array	User's settings
+     */
+    public function getUserSettings()
+    {
+        $defaults = array(
+            'pages' => $this->getSupportedPagesKeys(),
+            'fallback' => false,
+            'save_search' => true,
+        );
+        $stored = get_user_meta( get_current_user_id(), 'persistent_filters_settings', true );
+        if ( ! is_array( $stored ) ) {
+            $stored = array();
+        }
+        return wp_parse_args( $stored, $defaults );
+    }
 }

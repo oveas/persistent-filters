@@ -12,11 +12,18 @@ if (!defined('ABSPATH')) {
 class Persistent_Filters
 {
 	/**
-	 * Configuration
+	 * Filters to be saved in user meta
 	 * @access	private
-	 * @var		array	$settings	Configuration
+	 * @var		array	$saved_filters	Configuration
 	 */
-	private $settings;
+	private $saved_filters;
+
+	/**
+	 * User settings
+	 * @access	private
+	 * @var		array	$user_settings	User settings
+	 */
+	private $user_settings;
 
 	/**
 	 * Constructor
@@ -24,9 +31,12 @@ class Persistent_Filters
 	 */
 	public function __construct()
 	{
+		require_once plugin_dir_path( __FILE__ ) . 'persistent_filters_settings.php';
 		require_once plugin_dir_path( __FILE__ ) . 'persistent_filters_config.php';
 		require_once plugin_dir_path( __FILE__ ) . 'persistent_filters_clean.php';
-		$this->settings = Persistent_Filters_Config::getInstance()->getDefaults();
+
+		$this->saved_filters = Persistent_Filters_Config::getInstance()->getDefaults();
+		$this->user_settings = Persistent_Filters_Config::getInstance()->getUserSettings();
 
 		$cleaner = new Persistent_Filters_Clean();
 		add_action('load-edit.php', array($this, 'setEditFilters'), 30, 0);
@@ -50,7 +60,7 @@ class Persistent_Filters
 		if (!is_admin()) {
 			return;
 		}
-		if (isset($_GET['page']) && array_key_exists($_GET['page'], $this->settings['pages']['admin']['keys-allowed'])) {
+		if (isset($_GET['page']) && array_key_exists($_GET['page'], $this->saved_filters['pages']['admin']['keys-allowed'])) {
 			$this->setFilters('admin', $_GET);
 		}
 	}
@@ -60,7 +70,7 @@ class Persistent_Filters
 	 */
 	public function enqueueAdminScripts()
 	{
-		if ((isset($_GET['page']) && in_array($_GET['page'], $this->settings['pages']['admin']['needs-ajax'], true))) {
+		if ((isset($_GET['page']) && in_array($_GET['page'], $this->saved_filters['pages']['admin']['needs-ajax'], true))) {
 			wp_enqueue_script(
 				  'persistent-filters-admin'
 				, plugin_dir_url(PERSISTENT_FILTERS_MAIN_FILE) . 'js/persistent_filters.js'
@@ -86,7 +96,7 @@ class Persistent_Filters
 			wp_localize_script('persistent-filters-admin', 'pf_data', array(
 				  'nonce' => wp_create_nonce('persistent_filters_nonce')
 				, 'saved_filters' => $saved_array
-				, 'endpoints' => $this->settings['pages']['admin']['ajax-endpoints']
+				, 'endpoints' => $this->saved_filters['pages']['admin']['ajax-endpoints']
 			));
 		}
 	}
@@ -144,13 +154,13 @@ class Persistent_Filters
 			return; // Safety net
 		}
 		$user_id   = get_current_user_id();
-		if ((isset($request['action']) && in_array($request['action'], $this->settings['keys-ignored'], true)) ||
-			(isset($request['action2']) && in_array($request['action2'], $this->settings['keys-ignored'], true))) {
+		if ((isset($request['action']) && in_array($request['action'], $this->saved_filters['keys-ignored'], true)) ||
+			(isset($request['action2']) && in_array($request['action2'], $this->saved_filters['keys-ignored'], true))) {
 			return;
 		}
 
-		if ('yes' == $this->settings['ignore-export']) {
-			foreach ($this->settings['export-params'] as $param) {
+		if ('yes' == $this->saved_filters['ignore-export']) {
+			foreach ($this->saved_filters['export-params'] as $param) {
 				if (isset($request[$param])) {
 					return;
 				}
@@ -179,12 +189,12 @@ class Persistent_Filters
 		// If no allowed keys for this post type and fallback is disabled, do nothing
 		// This check must be after the reset above to make sure saved filters can still be removed after
 		// fallback has been disabled.
-		if ('yes' != $this->settings['pages'][$page]['fallback-enabled'] && !isset($this->settings['pages'][$page]['keys-allowed'][$post_type])) {
+		if ('yes' != $this->saved_filters['pages'][$page]['fallback-enabled'] && !isset($this->saved_filters['pages'][$page]['keys-allowed'][$post_type])) {
 			return;
 		}
 
 		// Check if filters are set in the URL. If so, save them.
-		$keys_allowed = isset($this->settings['pages'][$page]['keys-allowed'][$post_type]) ? $this->settings['pages'][$page]['keys-allowed'][$post_type] : $this->settings['pages'][$page]['keys-fallback'];
+		$keys_allowed = isset($this->saved_filters['pages'][$page]['keys-allowed'][$post_type]) ? $this->saved_filters['pages'][$page]['keys-allowed'][$post_type] : $this->saved_filters['pages'][$page]['keys-fallback'];
 		if (!empty($request) && (count($request) > 1 || isset($request['orderby']))) {
 
 			$new_query = array_intersect_key($request, array_flip($keys_allowed));
