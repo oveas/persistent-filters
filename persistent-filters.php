@@ -97,6 +97,32 @@ function Persistent_Filters_Load_Textdomain()
 }
 
 /**
+ * Add 'Settings' link to the plugin action links
+ * @param	array $links	Current plugin action links
+ */
+function Persistent_Filters_Settings($links)
+{
+	$links[] = '<a href="options-general.php?page=persistent-filters-settings">' . __('Settings', 'persistent-filters') . '</a>';
+	return $links;
+}
+
+/**
+ * Add a page under Settings for each admin user to edit their own settings
+ */
+function Persistent_Filters_Menu()
+{
+	require_once plugin_dir_path( __FILE__ ) . 'includes/persistent_filters_settings.php';
+    add_options_page(
+        __( 'Persistent Filters Settings', 'persistent-filters' ),
+        __( 'Persistent Filters', 'persistent-filters' ),
+        'read',
+        'persistent-filters-settings',
+        array( Persistent_Filters_Settings::getInstance(), 'renderPage' )
+    );
+}
+
+
+/**
  * Instantiate this plugin
  */
 function Persistent_Filters_Execute()
@@ -110,7 +136,7 @@ if (is_admin()) {
 	register_uninstall_hook( __FILE__, 'Persistent_Filters_Uninstall' );
 	add_action( 'init', 'Persistent_Filters_Load_Textdomain' );
 	add_action( 'plugins_loaded', 'Persistent_Filters_Update_Database' );
-	Persistent_Filters_Execute();
+	add_action( 'init', 'Persistent_Filters_Execute' );
+	add_filter('plugin_action_links_' . plugin_basename(PERSISTENT_FILTERS_MAIN_FILE), 'Persistent_Filters_Settings', 30, 1);
+	add_action( 'admin_menu', 'Persistent_Filters_Menu' );
 }
-
-

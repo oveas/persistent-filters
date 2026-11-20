@@ -13,6 +13,7 @@ class Persistent_Filters_Settings
 {
     /**
      * Reference to self
+	 * @access	private
      * @var		object reference	$instance
      */
     private static $instance = null;
@@ -23,20 +24,7 @@ class Persistent_Filters_Settings
     public function __construct()
     {
 		require_once plugin_dir_path( __FILE__ ) . 'persistent_filters_config.php';
-        add_action( 'admin_menu', array( $this, 'addMenu' ) );
-		add_filter('plugin_action_links_' . plugin_basename(PERSISTENT_FILTERS_MAIN_FILE), array($this, 'openSettingsPage'), 30, 1);
     }
-
-	/**
-	 * Add 'Settings' link to the plugin action links
-	 * @param	array $links	Current plugin action links
-	 * @return	array
-	 */
-	public function openSettingsPage($links)
-	{
-		$links[] = '<a href="options-general.php?page=persistent-filters-settings">' . __('Settings', 'persistent-filters') . '</a>';
-		return $links;
-	}
 
     /**
 	 * Instantiate an object if not existing yet and return a reference
@@ -48,19 +36,6 @@ class Persistent_Filters_Settings
             self::$instance = new self();
         }
         return self::$instance;
-    }
-    /**
-     * Add a page under Settings for each admin user to edit their own settings
-     */
-    public function addMenu()
-    {
-        add_options_page(
-            __( 'Persistent Filters Settings', 'persistent-filters' ),
-            __( 'Persistent Filters', 'persistent-filters' ),
-            'read',
-            'persistent-filters-settings',
-            array( $this, 'renderPage' )
-        );
     }
 
     /**
@@ -119,7 +94,7 @@ class Persistent_Filters_Settings
                 echo '<div class="updated"><p>' . esc_html__( 'Settings saved.', 'persistent-filters' ) . '</p></div>';
             }
         }
-        $settings = Persistent_Filters_Config::getInstance()->getUserSettings();
+        $settings = Persistent_Filters_Config::getInstance()->getSettings();
         $defaults = Persistent_Filters_Config::getInstance()->getDefaults();
         ?>
         <div class="wrap">
