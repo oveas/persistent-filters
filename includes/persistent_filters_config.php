@@ -106,7 +106,37 @@ class Persistent_Filters_Config
         ];
     }
 
-    /**
+	/**
+	 * Get the info text for the settings page
+	 * @return    array    Info text
+	 */
+    public function getInfoText()
+    {
+        return [
+                 'edit' => [
+                     'post'         => __( 'Wordpress Posts', 'persistent-filters' )
+                   , 'page'         => __( 'Wordpress Pages', 'persistent-filters' )
+                   , 'product'      => __( 'WooCommerce Products', 'persistent-filters' )
+                   , 'shop_order'   => __( 'WooCommerce Legacy Orders', 'persistent-filters' )
+                   , 'shop_coupon'  => __( 'WooCommerce Coupons', 'persistent-filters' )
+                   , 'tribe_events' => __( 'Events Calendar plugin Events listing', 'persistent-filters' )
+				   , 'info_text'    => __( "Select for which post types of 'wp-admin/edit.php' the filters should be saved.", 'persistent-filters' )
+                ]
+                , 'admin' => [
+                     'wc-orders' => __( 'WooCommerce HPOS Orders', 'persistent-filters' )
+                   , 'simple_history_admin_menu_page' => __( 'Simple History plugin', 'persistent-filters' )
+				   , 'info_text'    => __( "Select for which post types of 'wp-admin/admin.php' the filters should be saved.", 'persistent-filters' )
+                ]
+               , 'users' => [
+                     'all' => __( 'Wordpress Users', 'persistent-filters' )
+				   , 'info_text'    => __( "Select for which post types of 'wp-admin/users.php' the filters should be saved.", 'persistent-filters' )
+                ]
+				, 'enable_fallback' => __( 'When enabled, if no stored filters exist for a page, the default filters "s", "orderby", and "order" will be used instead. Disable this if you experience infinte loops.', 'persistent-filters' )
+				, 'search_field' => __( 'Uncheck this if you do not want searches to be persistent. This works for all pages and post types.', 'persistent-filters' )
+	       ];
+    }
+
+	/**
      * Get the default pages to save filters for
      * @return  array   List of supported pages and keys
      */

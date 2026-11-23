@@ -54,6 +54,15 @@ A: Correct, that button is only shown when you actually used a filter for the cu
 Q: Can I remove all filters at once? =
 A: Yes, in the **Plugins** screen in your Admin environment, click the `Reset all filters` link next to the `Deactivate` option. You will get a popup where you can select if you want to remove your own filters only, or for all users.
 
+Q: I don't want to save every search. Can I disable that?
+A: Yes you can. Go to the Settings page, either via `Plugins` or via `Settings` -> `Persistent Filters` and uncheck `Save the search field ("s") value`
+
+Q: I experienced an infinite loop when using this plugin. What can I do?
+A: This might happen if you checkeed `Enable fallback` in the settings. If this is the case, disable that option and the infinite loop should stop. The fallback is only needed if you want to have default filters applied when no filters are stored for a certain listing.
+
+Q: I unchecked `Save search field` in the settings, but when I go to a certain listing, the search field is still filled with a previous search term. Why?
+A: When your last search term was stored, the plugin will still reapply that search term when you return to that listing. The setting only prevents new search terms from being stored. Just clear the search field manually or use the "Reset filters" button.
+
 ## Contributing
 Contributions, bug reports and feature requests are welcome. Please open an issue or submit a pull request on the plugin repository.
 
@@ -74,3 +83,5 @@ GNU General Public License GPLv2 — see license.txt for details.
   - Added support for WooCommerce coupons and HPOS orders
 - 1.3.1
   - Added support for Simple History, The Events Calendar and Users
+- 1.4.0
+  - Added user-specific settings

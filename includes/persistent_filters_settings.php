@@ -46,15 +46,26 @@ class Persistent_Filters_Settings
         if ( ! is_user_logged_in() ) {
             return;
         }
+        $defaults = Persistent_Filters_Config::getInstance()->getDefaults();
+        $submitted_pages = isset( $_POST['persistent_filters_pages'] ) && is_array( $_POST['persistent_filters_pages'] )
+            ? wp_unslash( $_POST['persistent_filters_pages'] )
+            : array();
+        $enabled_pages = isset( $_POST['persistent_filters_page_enabled'] ) && is_array( $_POST['persistent_filters_page_enabled'] )
+            ? wp_unslash( $_POST['persistent_filters_page_enabled'] )
+            : array();
         $pages = array();
-        if ( isset( $_POST['persistent_filters_pages'] ) && is_array( $_POST['persistent_filters_pages'] ) ) {
-            foreach ( $_POST['persistent_filters_pages'] as $page => $post_type ) {
-                $pages[$page] = 1;
-                if ( is_array( $post_type ) ) {
-                    $pages[$page] = array();
-                    foreach ( $post_type as $p ) {
-                        $pages[$page][] = sanitize_text_field( wp_unslash( $p ) );
-                    }
+        foreach ( $defaults['pages'] as $page => $page_settings ) {
+            if ( isset( $enabled_pages[ $page ] ) ) {
+                $pages[ $page ] = array_keys( $page_settings['keys-allowed'] );
+                continue;
+            }
+
+            if ( isset( $submitted_pages[ $page ] ) && is_array( $submitted_pages[ $page ] ) ) {
+                $selected_values = array_filter( $submitted_pages[ $page ], 'is_string' );
+                $selected = array_map( 'sanitize_key', $selected_values );
+                $pages[ $page ] = array_values( array_intersect( array_keys( $page_settings['keys-allowed'] ), $selected ) );
+                if ( empty( $pages[ $page ] ) ) {
+                    unset( $pages[ $page ] );
                 }
             }
         }
@@ -96,6 +107,7 @@ class Persistent_Filters_Settings
         }
         $settings = Persistent_Filters_Config::getInstance()->getSettings();
         $defaults = Persistent_Filters_Config::getInstance()->getDefaults();
+        $infotext = Persistent_Filters_Config::getInstance()->getInfoText();
         ?>
         <div class="wrap">
             <h1><?php esc_html_e( 'Persistent Filters - Personal Settings', 'persistent-filters' ); ?></h1>
@@ -107,41 +119,34 @@ class Persistent_Filters_Settings
                         <td>
                             <fieldset>
                                 <legend class="screen-reader-text"><span><?php esc_html_e( 'Pages to save filters for', 'persistent-filters' ); ?></span></legend>
-                                <?php foreach ($defaults['pages'] as $page => $page_settings) :
-                                    if (array_key_exists( $page, (array) $settings['pages'])) {
-                                        $checked = true;
-                                    } else {
-                                        $checked = false;
-                                    }
+                                <?php foreach ( $defaults['pages'] as $page => $page_settings ) :
+                                    $section_id = 'persistent-filters-' . sanitize_html_class( $page );
+                                    $selected_keys = isset( $settings['pages'][ $page ] ) ? (array) $settings['pages'][ $page ] : array();
+                                    $all_selected = ! empty( $page_settings['keys-allowed'] )
+                                        && count( array_intersect( array_keys( $page_settings['keys-allowed'] ), $selected_keys ) ) === count( $page_settings['keys-allowed'] );
                                 ?>
-                                    <label style="display:block; margin-bottom:4px;">
-                                        <input type="checkbox" name="persistent_filters_pages[<?php echo esc_attr( $page ); ?>]" value="1" <?php checked( $checked ); ?> />
-                                        <?php echo esc_html( $page ); ?>
-                                    </label>
-                                    <p class="description"><?php esc_html_e( 'Allowed post types for page', 'persistent-filters' ); ?> <strong><?php echo esc_html( $page ); ?></strong>:</p>
-                                    <?php foreach ( $page_settings['keys-allowed'] as $key => $fields ) : ?>
-                                        <?php
-                                        if (array_key_exists( $page, (array) $settings['pages'] ) && in_array( $key, (array) $settings['pages'][$page], true )) {
-                                            $checked = true;
-                                        } else {
-                                            $checked = false;
-                                        }
-                                        ?>
+                                    <section class="persistent-filters-settings-section">
                                         <label style="display:block; margin-bottom:4px;">
-                                            <input style="margin-left: 40px;" type="checkbox" name="persistent_filters_pages[<?php echo ($page); ?>][]" value="<?php echo esc_attr( $key ); ?>" <?php checked( $checked ); ?> />
-                                            <?php echo esc_html( $key ); ?>
+                                            <input class="persistent-filters-page-toggle" type="checkbox" name="persistent_filters_page_enabled[<?php echo esc_attr( $page ); ?>]" value="1" <?php checked( $all_selected ); ?> />
+                                            <?php echo esc_html( $page ); ?>
+                                            <i class="dashicons dashicons-editor-help" title="<?php echo esc_html($infotext[$page]['info_text']); ?>"></i>
                                         </label>
-                                        <!-- <p style="margin-left: 40px;" class="description"><?php esc_html_e( 'Allowed fields for post type', 'persistent-filters' ); ?> <?php echo esc_html( $key ); ?>:</p>
-                                            <?php foreach ( $fields as $field ) : ?>
+                                        <button class="button-link persistent-filters-section-toggle" type="button" aria-expanded="true" aria-controls="<?php echo esc_attr( $section_id ); ?>">
+                                            <?php esc_html_e( 'Hide options', 'persistent-filters' ); ?>
+                                        </button>
+                                        <div id="<?php echo esc_attr( $section_id ); ?>" class="persistent-filters-section-options">
+                                            <span class="description"><?php esc_html_e( 'Allowed post types for page', 'persistent-filters' ); ?> <strong><?php echo esc_html( $page ); ?></strong>:</span>
+                                            <?php foreach ( $page_settings['keys-allowed'] as $key => $fields ) : ?>
                                                 <label style="display:block; margin-bottom:4px;">
-                                                    <input style="margin-left: 80px;" type="checkbox" name="persistent_filters_page_keys_fields[]" value="<?php echo esc_attr( $field ); ?>" <?php checked( in_array( $page, (array) $settings['pages'], true ) ); ?> />
-                                                    <?php echo esc_html( $field ); ?>
+                                                    <input style="margin-left: 40px;" class="persistent-filters-subitem-toggle" type="checkbox" name="persistent_filters_pages[<?php echo esc_attr( $page ); ?>][]" value="<?php echo esc_attr( $key ); ?>" <?php checked( in_array( $key, $selected_keys, true ) ); ?> />
+                                                    <?php echo esc_html( $key ); ?>
+                                                    <i class="dashicons dashicons-editor-help" title="<?php echo esc_html($infotext[$page][$key]); ?>"></i>
                                                 </label>
-                                            <?php endforeach; ?> -->
-                                    <?php endforeach; ?>    
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </section>
                                 <?php endforeach; ?>
                             </fieldset>
-                            <p class="description"><?php esc_html_e( 'Select which admin pages should have persistent filters saved.', 'persistent-filters' ); ?></p>
                         </td>
                     </tr>
                     <tr>
@@ -151,7 +156,7 @@ class Persistent_Filters_Settings
                                 <input type="checkbox" name="persistent_filters_fallback" value="1" <?php checked( (bool) $settings['fallback'] ); ?> />
                                 <?php esc_html_e( 'Use fallback when no stored filters exist', 'persistent-filters' ); ?>
                                 <i><?php esc_html_e( '(Experimental!)', 'persistent-filters' ); ?></i>
-                                <i class="dashicons dashicons-editor-help" title="<?php esc_html_e( 'When enabled, if no stored filters exist for a page, the default filters "s", "orderby", and "order" will be used instead. Disable this if you experience infinte loops.', 'persistent-filters' ); ?>"></i>
+                                <i class="dashicons dashicons-editor-help" title="<?php echo esc_html($infotext['enable_fallback']); ?>"></i>
                             </label>
                         </td>
                     </tr>
@@ -161,6 +166,7 @@ class Persistent_Filters_Settings
                             <label>
                                 <input type="checkbox" name="persistent_filters_save_search" value="1" <?php checked( (bool) $settings['save_search'] ); ?> />
                                 <?php esc_html_e( 'Save the search field ("s") value', 'persistent-filters' ); ?>
+                                <i class="dashicons dashicons-editor-help" title="<?php echo esc_html($infotext['search_field']); ?>"></i>
                             </label>
                         </td>
                     </tr>
@@ -170,6 +176,51 @@ class Persistent_Filters_Settings
                 </p>
             </form>
         </div>
+        <style>
+        .persistent-filters-page-toggle {
+            position: relative;
+        }
+        .persistent-filters-page-toggle:indeterminate::before {
+            content: "";
+            position: absolute;
+            top: 6px;
+            left: 3px;
+            width: 8px;
+            height: 2px;
+            margin: 0;
+            background-color: #2271b1;
+        }
+        </style>
+        <script>
+        document.querySelectorAll('.persistent-filters-settings-section').forEach(function (section) {
+            var parent = section.querySelector('.persistent-filters-page-toggle');
+            var children = Array.from(section.querySelectorAll('.persistent-filters-subitem-toggle'));
+            var toggle = section.querySelector('.persistent-filters-section-toggle');
+            var options = section.querySelector('.persistent-filters-section-options');
+
+            function updateParent() {
+                var checkedCount = children.filter(function (child) { return child.checked; }).length;
+                parent.checked = children.length > 0 && checkedCount === children.length;
+                parent.indeterminate = checkedCount > 0 && checkedCount < children.length;
+                parent.setAttribute('aria-checked', parent.indeterminate ? 'mixed' : String(parent.checked));
+            }
+
+            parent.addEventListener('change', function () {
+                children.forEach(function (child) { child.checked = parent.checked; });
+                updateParent();
+            });
+            children.forEach(function (child) {
+                child.addEventListener('change', updateParent);
+            });
+            toggle.addEventListener('click', function () {
+                var expanded = toggle.getAttribute('aria-expanded') === 'true';
+                toggle.setAttribute('aria-expanded', String(!expanded));
+                options.hidden = expanded;
+                toggle.textContent = expanded ? '<?php echo esc_js( __( 'Show options', 'persistent-filters' ) ); ?>' : '<?php echo esc_js( __( 'Hide options', 'persistent-filters' ) ); ?>';
+            });
+            updateParent();
+        });
+        </script>
         <?php
     }
 }
