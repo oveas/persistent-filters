@@ -9,10 +9,9 @@ msgstr ""
 "v1.0.0\n"
 "Report-Msgid-Bugs-To: "
 "Translator Name "
-"<translations@example."
-"com>\n"
+"<translations@example.com>\n"
 "POT-Creation-Date: "
-"2026-06-20 12:20+0200\n"
+"2026-11-23 14:26+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Your "
 "Name <you@example.com>\n"
@@ -34,24 +33,14 @@ msgstr ""
 "X-Poedit-SourceCharset: "
 "UTF-8\n"
 "X-Poedit-KeywordsList: "
-"__;_e;esc_html_e;"
-"esc_html_x:1,2c;"
-"esc_html__;esc_attr_e;"
-"esc_attr_x:1,2c;"
-"esc_attr__;_ex:1,2c;"
-"_nx:4c,1,2;"
-"_nx_noop:4c,1,2;_x:1,2c;"
-"_n:1,2;_n_noop:1,2;"
-"__ngettext:1,2;"
-"__ngettext_noop:1,2;_c,"
-"_nc:4c,1,2\n"
+"__;_e;esc_html_e;esc_html_x:1,2c;esc_html__;esc_attr_e;esc_attr_x:1,2c;esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;_x:1,2c;_n:1,2;_n_noop:1,2;__ngettext:1,2;__ngettext_noop:1,2;_c,_nc:4c,1,2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Generator: Poedit "
-"3.4.2\n"
+"3.9\n"
 "X-Poedit-"
 "SearchPath-0: .\n"
 
-#: includes/persistent_filters.php:307
+#: includes/persistent_filters.php:309
 msgid "Reset filters"
 msgstr ""
 
@@ -96,4 +85,168 @@ msgstr ""
 #: includes/persistent_filters_clean.php:149
 msgid ""
 "for your user only."
+msgstr ""
+
+#: includes/persistent_filters_config.php:117
+msgid "Wordpress Posts"
+msgstr ""
+
+#: includes/persistent_filters_config.php:118
+msgid "Wordpress Pages"
+msgstr ""
+
+#: includes/persistent_filters_config.php:119
+msgid ""
+"WooCommerce Products"
+msgstr ""
+
+#: includes/persistent_filters_config.php:120
+msgid ""
+"WooCommerce Legacy "
+"Orders"
+msgstr ""
+
+#: includes/persistent_filters_config.php:121
+msgid ""
+"WooCommerce Coupons"
+msgstr ""
+
+#: includes/persistent_filters_config.php:122
+msgid ""
+"Events Calendar plugin "
+"Events listing"
+msgstr ""
+
+#: includes/persistent_filters_config.php:123
+msgid ""
+"Select for which post "
+"types of 'wp-admin/"
+"edit.php' the filters "
+"should be saved."
+msgstr ""
+
+#: includes/persistent_filters_config.php:126
+msgid ""
+"WooCommerce HPOS Orders"
+msgstr ""
+
+#: includes/persistent_filters_config.php:127
+msgid ""
+"Simple History plugin"
+msgstr ""
+
+#: includes/persistent_filters_config.php:128
+msgid ""
+"Select for which post "
+"types of 'wp-admin/"
+"admin.php' the filters "
+"should be saved."
+msgstr ""
+
+#: includes/persistent_filters_config.php:131
+msgid "Wordpress Users"
+msgstr ""
+
+#: includes/persistent_filters_config.php:132
+msgid ""
+"Select for which post "
+"types of 'wp-admin/"
+"users.php' the filters "
+"should be saved."
+msgstr ""
+
+#: includes/persistent_filters_config.php:134
+msgid ""
+"When enabled, if no "
+"stored filters exist "
+"for a page, the default "
+"filters \"s\", "
+"\"orderby\", and "
+"\"order\" will be used "
+"instead. Disable this "
+"if you experience "
+"infinte loops."
+msgstr ""
+
+#: includes/persistent_filters_config.php:135
+msgid ""
+"Uncheck this if you do "
+"not want searches to be "
+"persistent. This works "
+"for all pages and post "
+"types."
+msgstr ""
+
+#: includes/persistent_filters_settings.php:105
+msgid "Settings saved."
+msgstr ""
+
+#: includes/persistent_filters_settings.php:113
+msgid ""
+"Persistent Filters - "
+"Personal Settings"
+msgstr ""
+
+#: includes/persistent_filters_settings.php:118
+#: includes/persistent_filters_settings.php:121
+msgid ""
+"Pages to save filters "
+"for"
+msgstr ""
+
+#: includes/persistent_filters_settings.php:135
+#: includes/persistent_filters_settings.php:219
+msgid "Hide options"
+msgstr ""
+
+#: includes/persistent_filters_settings.php:138
+msgid ""
+"Allowed post types for "
+"page"
+msgstr ""
+
+#: includes/persistent_filters_settings.php:153
+msgid "Enable fallback"
+msgstr ""
+
+#: includes/persistent_filters_settings.php:157
+msgid ""
+"Use fallback when no "
+"stored filters exist"
+msgstr ""
+
+#: includes/persistent_filters_settings.php:158
+msgid "(Experimental!)"
+msgstr ""
+
+#: includes/persistent_filters_settings.php:164
+msgid "Save search field"
+msgstr ""
+
+#: includes/persistent_filters_settings.php:168
+msgid ""
+"Save the search field "
+"(\"s\") value"
+msgstr ""
+
+#: includes/persistent_filters_settings.php:175
+msgid "Save Changes"
+msgstr ""
+
+#: includes/persistent_filters_settings.php:219
+msgid "Show options"
+msgstr ""
+
+#: persistent-filters.php:105
+msgid "Settings"
+msgstr ""
+
+#: persistent-filters.php:116
+msgid ""
+"Persistent Filters "
+"Settings"
+msgstr ""
+
+#: persistent-filters.php:117
+msgid "Persistent Filters"
 msgstr ""
